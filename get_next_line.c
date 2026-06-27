@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ukaminsk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: urkamins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/22 19:11:48 by urkamins          #+#    #+#             */
-/*   Updated: 2026/06/26 21:08:35 by ukaminsk         ###   ########.fr       */
+/*   Created: 2026/06/27 17:24:30 by urkamins          #+#    #+#             */
+/*   Updated: 2026/06/27 17:25:04 by urkamins         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "get_next_line.h"
 
@@ -32,7 +32,7 @@ static int	read_until_endl(int fd, char **txt)
 	while (!*txt || !ft_strchr(*txt, '\n'))
 	{
 		bytes = read(fd, buff, BUFFER_SIZE);
-		if (bytes <= 0 )
+		if (bytes <= 0)
 			return (free_txt(&buff, bytes));
 		buff[bytes] = 0;
 		temp = *txt;
@@ -70,7 +70,7 @@ char	*get_next_line(int fd)
 {
 	static char	*txt;
 	int			is_read;
-	
+
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	is_read = read_until_endl(fd, &txt);

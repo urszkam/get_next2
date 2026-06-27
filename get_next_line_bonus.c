@@ -1,14 +1,14 @@
-/******************************************************************************/
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ukaminsk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: urkamins <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/22 19:11:48 by urkamins          #+#    #+#             */
-/*   Updated: 2026/06/25 23:32:30 by ukaminsk         ###   ########.fr       */
+/*   Created: 2026/06/27 17:26:29 by urkamins          #+#    #+#             */
+/*   Updated: 2026/06/27 17:27:03 by urkamins         ###   ########.fr       */
 /*                                                                            */
-/******************************************************************************/
+/* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
@@ -53,7 +53,7 @@ static int	read_until_endl(t_content *node)
 	while (!node->txt || !ft_strchr(node->txt, '\n'))
 	{
 		bytes = read(node->fd, buff, BUFFER_SIZE);
-		if (bytes <= 0 )
+		if (bytes <= 0)
 			return (free_str(&buff, bytes));
 		buff[bytes] = 0;
 		temp = node->txt;
@@ -93,7 +93,7 @@ char	*get_next_line(int fd)
 	static t_content	*content;
 	t_content			*node;
 	int					is_read;
-	
+
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	node = content;
