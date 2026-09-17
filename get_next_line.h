@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: urkamins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: urkamins <urkamins@student.42warsaw.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/27 12:57:41 by urkamins          #+#    #+#             */
 /*   Updated: 2026/06/27 17:25:44 by urkamins         ###   ########.fr       */

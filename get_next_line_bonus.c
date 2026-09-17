@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: urkamins <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: urkamins <urkamins@student.42warsaw.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/27 17:26:29 by urkamins          #+#    #+#             */
 /*   Updated: 2026/06/27 17:27:03 by urkamins         ###   ########.fr       */
@@ -22,10 +22,15 @@ static int	free_str(char **ptr, int ret)
 	return (ret);
 }
 
-static t_content	*ft_lstadd_front(t_content **lst, int fd)
+static t_content	*ft_lstget(t_content **lst, int fd)
 {
 	t_content	*new;
 
+	new = *lst;
+	while (new && new->fd != fd)
+		new = new->next;
+	if (new)
+		return (new);
 	new = (t_content *)malloc(sizeof(t_content));
 	if (!new)
 		return (NULL);
@@ -78,8 +83,9 @@ static char	*extract_line(char **txt)
 	line = ft_substr(*txt, 0, pos + 1);
 	*txt = ft_substr(*txt, pos + 1, ft_strlen(*txt) - (pos + 1));
 	free(tmp);
-	if (!line)
+	if (!line || !*txt)
 	{
+		free(line);
 		free_str(txt, 0);
 		return (NULL);
 	}
@@ -92,27 +98,25 @@ char	*get_next_line(int fd)
 {
 	static t_content	*content;
 	t_content			*node;
+	char				*line;
 	int					is_read;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	node = content;
-	while (node && node->fd != fd)
-		node = node->next;
-	if (!node)
-		node = ft_lstadd_front(&content, fd);
+	node = ft_lstget(&content, fd);
 	if (!node)
 		return (NULL);
 	is_read = read_until_endl(node);
-	if ((!is_read && !node->txt) || is_read < 0)
-	{
-		if (node->prev)
-			node->prev->next = node->next;
-		if (node->next)
-			node->next->prev = node->prev;
-		free(node->txt);
-		free(node);
-		return (NULL);
-	}
-	return (extract_line(&node->txt));
+	line = NULL;
+	if (is_read >= 0 && (is_read || node->txt))
+		line = extract_line(&node->txt);
+	if (line)
+		return (line);
+	if (node->prev)
+		node->prev->next = node->next;
+	else
+		content = node->next;
+	if (node->next)
+		node->next->prev = node->prev;
+	return (free(node->txt), free(node), NULL);
 }
