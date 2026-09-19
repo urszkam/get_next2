@@ -12,14 +12,6 @@
 
 #include "get_next_line.h"
 
-static int	free_txt(char **ptr, int ret)
-{
-	if (ptr && *ptr)
-		free(*ptr);
-	*ptr = NULL;
-	return (ret);
-}
-
 static int	read_until_endl(int fd, char **txt)
 {
 	char	*buff;
@@ -33,15 +25,15 @@ static int	read_until_endl(int fd, char **txt)
 	{
 		bytes = read(fd, buff, BUFFER_SIZE);
 		if (bytes <= 0)
-			return (free_txt(&buff, bytes));
+			return (free(buff), bytes);
 		buff[bytes] = 0;
 		temp = *txt;
 		*txt = ft_strjoin(temp, buff);
 		free(temp);
 		if (!*txt)
-			return (free_txt(&buff, -1));
+			return (free(buff), -1);
 	}
-	return (free_txt(&buff, 1));
+	return (free(buff), 1);
 }
 
 static char	*extract_line(char **txt)
@@ -60,7 +52,8 @@ static char	*extract_line(char **txt)
 	if (!line || !*txt)
 	{
 		free(line);
-		free_txt(txt, 0);
+		free(*txt);
+		*txt = NULL;
 		return (NULL);
 	}
 	return (line);
@@ -69,14 +62,15 @@ static char	*extract_line(char **txt)
 char	*get_next_line(int fd)
 {
 	static char	*txt;
-	int			is_read;
+	int			was_read;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	is_read = read_until_endl(fd, &txt);
-	if ((!is_read && (!txt || !*txt)) || is_read < 0)
+	was_read = read_until_endl(fd, &txt);
+	if ((!was_read && (!txt || !*txt)) || was_read < 0)
 	{
-		free_txt(&txt, 0);
+		free(txt);
+		txt = NULL;
 		return (NULL);
 	}
 	return (extract_line(&txt));

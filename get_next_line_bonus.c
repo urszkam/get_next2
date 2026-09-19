@@ -12,16 +12,6 @@
 
 #include "get_next_line_bonus.h"
 
-static int	free_str(char **ptr, int ret)
-{
-	if (ptr && *ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
-	return (ret);
-}
-
 static t_content	*ft_lstget(t_content **lst, int fd)
 {
 	t_content	*new;
@@ -59,15 +49,15 @@ static int	read_until_endl(t_content *node)
 	{
 		bytes = read(node->fd, buff, BUFFER_SIZE);
 		if (bytes <= 0)
-			return (free_str(&buff, bytes));
+			return (free(buff), bytes);
 		buff[bytes] = 0;
 		temp = node->txt;
 		node->txt = ft_strjoin(temp, buff);
 		free(temp);
 		if (!node->txt)
-			return (free_str(&buff, -1));
+			return (free(buff), -1);
 	}
-	return (free_str(&buff, 1));
+	return (free(buff), 1);
 }
 
 static char	*extract_line(char **txt)
@@ -86,11 +76,15 @@ static char	*extract_line(char **txt)
 	if (!line || !*txt)
 	{
 		free(line);
-		free_str(txt, 0);
+		free(*txt);
+		*txt = NULL;
 		return (NULL);
 	}
 	if (*txt && !**txt)
-		free_str(txt, 0);
+	{
+		free(*txt);
+		*txt = NULL;
+	}
 	return (line);
 }
 
@@ -99,16 +93,16 @@ char	*get_next_line(int fd)
 	static t_content	*content;
 	t_content			*node;
 	char				*line;
-	int					is_read;
+	int					was_read;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	node = ft_lstget(&content, fd);
 	if (!node)
 		return (NULL);
-	is_read = read_until_endl(node);
+	was_read = read_until_endl(node);
 	line = NULL;
-	if (is_read >= 0 && (is_read || node->txt))
+	if (was_read > 0 || (!was_read && node->txt))
 		line = extract_line(&node->txt);
 	if (line)
 		return (line);
